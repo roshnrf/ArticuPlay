@@ -1,0 +1,105 @@
+<svg viewBox="0 0 980 660" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowDashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f97316"/>
+    </marker>
+  </defs>
+
+  <style>
+    .box { stroke-width: 1.6; rx: 10; }
+    .done { fill: #ecfdf5; stroke: #22c55e; }
+    .partial { fill: #fff7ed; stroke: #f97316; }
+    .planned { fill: #f8fafc; stroke: #94a3b8; stroke-dasharray: 6 4; }
+    .label { font-size: 15px; font-weight: 700; fill: #111827; }
+    .sublabel { font-size: 12px; fill: #4b5563; }
+    .tag { font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px; }
+    .tag-done { fill: #16a34a; }
+    .tag-partial { fill: #ea580c; }
+    .tag-planned { fill: #64748b; }
+    .edge { stroke: #475569; stroke-width: 1.6; fill: none; marker-end: url(#arrow); }
+    .edge-dashed { stroke: #f97316; stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; marker-end: url(#arrowDashed); }
+    .group-title { font-size: 12.5px; font-weight: 700; fill: #6b7280; letter-spacing: 0.5px; }
+  </style>
+
+  <!-- Frontend -->
+  <rect x="370" y="20" width="240" height="70" class="box done"/>
+  <text x="490" y="48" text-anchor="middle" class="label">React + TypeScript</text>
+  <text x="490" y="68" text-anchor="middle" class="sublabel">Frontend (drill loop, retry logic)</text>
+  <text x="580" y="82" text-anchor="end" class="tag tag-done">DONE</text>
+
+  <line x1="490" y1="90" x2="490" y2="130" class="edge"/>
+
+  <!-- Backend group -->
+  <rect x="120" y="130" width="740" height="190" rx="14" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
+  <text x="140" y="152" class="group-title">FASTAPI BACKEND</text>
+
+  <rect x="140" y="165" width="150" height="60" class="box done"/>
+  <text x="215" y="190" text-anchor="middle" class="label" font-size="13">Auth</text>
+  <text x="215" y="207" text-anchor="middle" class="tag tag-done">DONE</text>
+
+  <rect x="310" y="165" width="150" height="60" class="box done"/>
+  <text x="385" y="190" text-anchor="middle" class="label" font-size="13">Session + Scoring</text>
+  <text x="385" y="207" text-anchor="middle" class="tag tag-done">DONE</text>
+
+  <rect x="480" y="165" width="150" height="60" class="box done"/>
+  <text x="555" y="190" text-anchor="middle" class="label" font-size="13">ASR Service</text>
+  <text x="555" y="207" text-anchor="middle" class="tag tag-done">DONE</text>
+
+  <rect x="650" y="165" width="150" height="60" class="box done"/>
+  <text x="725" y="190" text-anchor="middle" class="label" font-size="13">TTS Service</text>
+  <text x="725" y="207" text-anchor="middle" class="tag tag-done">DONE</text>
+
+  <rect x="140" y="255" width="320" height="50" class="box done"/>
+  <text x="300" y="285" text-anchor="middle" class="sublabel" font-size="13">Content (word bank, 491 words)</text>
+  <text x="440" y="285" text-anchor="end" class="tag tag-done">DONE</text>
+
+  <!-- DB -->
+  <rect x="30" y="400" width="200" height="70" class="box done"/>
+  <text x="130" y="428" text-anchor="middle" class="label" font-size="14">PostgreSQL</text>
+  <text x="130" y="446" text-anchor="middle" class="sublabel">Supabase</text>
+  <text x="220" y="460" text-anchor="end" class="tag tag-done">DONE</text>
+  <line x1="215" y1="320" x2="130" y2="400" class="edge"/>
+
+  <!-- ASR model -->
+  <rect x="280" y="400" width="260" height="90" class="box done"/>
+  <text x="410" y="428" text-anchor="middle" class="label" font-size="14">Fine-tuned Whisper-small</text>
+  <text x="410" y="446" text-anchor="middle" class="sublabel">LoRA, 491-word vocab, CTranslate2</text>
+  <text x="410" y="463" text-anchor="middle" class="sublabel">96% held-out accuracy vs 80% base</text>
+  <text x="530" y="480" text-anchor="end" class="tag tag-done">DONE — INTEGRATED</text>
+  <line x1="555" y1="225" x2="410" y2="400" class="edge"/>
+
+  <!-- TTS -->
+  <rect x="570" y="400" width="180" height="70" class="box done"/>
+  <text x="660" y="428" text-anchor="middle" class="label" font-size="14">edge-tts</text>
+  <text x="660" y="446" text-anchor="middle" class="sublabel">Free, no API key</text>
+  <text x="740" y="460" text-anchor="end" class="tag tag-done">DONE</text>
+  <line x1="725" y1="225" x2="660" y2="400" class="edge"/>
+
+  <!-- Phone classifier -->
+  <rect x="780" y="400" width="180" height="90" class="box partial"/>
+  <text x="870" y="425" text-anchor="middle" class="label" font-size="13">Phone Classifier</text>
+  <text x="870" y="442" text-anchor="middle" class="sublabel">67.9% (LoRA)</text>
+  <text x="870" y="458" text-anchor="middle" class="sublabel">not yet wired into scoring</text>
+  <text x="950" y="478" text-anchor="end" class="tag tag-partial">BUILT, NOT INTEGRATED</text>
+  <line x1="555" y1="225" x2="870" y2="400" class="edge-dashed"/>
+
+  <!-- Multi-language -->
+  <rect x="280" y="550" width="420" height="70" class="box planned"/>
+  <text x="490" y="578" text-anchor="middle" class="label" font-size="14" fill="#475569">Multi-language adapters</text>
+  <text x="490" y="596" text-anchor="middle" class="sublabel">Swappable per-language LoRA + phonemizer lang code</text>
+  <text x="690" y="610" text-anchor="end" class="tag tag-planned">PLANNED — NOT BUILT</text>
+  <line x1="410" y1="490" x2="490" y2="550" class="edge-dashed" stroke="#94a3b8" marker-end="url(#arrow)"/>
+
+  <!-- Legend -->
+  <g transform="translate(30, 20)">
+    <rect x="0" y="0" width="16" height="16" rx="3" class="done"/>
+    <text x="22" y="12" class="sublabel">Done</text>
+    <rect x="0" y="24" width="16" height="16" rx="3" class="partial"/>
+    <text x="22" y="36" class="sublabel">Built, not integrated</text>
+    <rect x="0" y="48" width="16" height="16" rx="3" class="planned"/>
+    <text x="22" y="60" class="sublabel">Planned only</text>
+  </g>
+</svg>

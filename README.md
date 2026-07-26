@@ -14,6 +14,14 @@ swappable per-language LoRA adapter on a shared multilingual Whisper base, plus 
 `phonemizer` language-code swap for IPA scoring) — but no second-language adapter has been
 built or trained yet. Don't read "multilingual-ready architecture" as "multilingual today."
 
+## Architecture
+
+<img src="docs/assets/architecture.svg" width="820">
+
+Solid boxes/lines are shipped and integrated. Orange = built and validated but not wired into
+the live scoring path yet (the phone classifier). Dashed gray = designed for, not built
+(multi-language adapters).
+
 ## Stack
 
 - **Backend**: FastAPI + SQLAlchemy (async) + Alembic + PostgreSQL (Supabase)

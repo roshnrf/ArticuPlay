@@ -1,5 +1,7 @@
 # ArticuPlay
 
+<img src="docs/assets/mascot.png" width="140">
+
 AI-assisted speech-therapy drill app for children with Childhood Apraxia of Speech (CAS).
 A child hears a target word (TTS), repeats it, and the app scores the pronunciation at the
 phoneme level — substitution, omission, cluster-reduction, syllable-deletion — matching how a

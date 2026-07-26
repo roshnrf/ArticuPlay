@@ -35,7 +35,8 @@ trained on real disordered child speech (UltraSuite UXSSD corpus, leave-one-spea
 - v1 — frozen Whisper encoder embeddings + linear head: **60.9%**
 - v2 — LoRA-unfrozen encoder (`r=8, alpha=16`): **67.9%**
 
-![Phoneme classifier progress](docs/assets/phone_classifier_progress.png)
+<img src="docs/assets/phone_classifier_progress.png" width="420">
+
 
 ### Speech-to-text transcriber (`research/uxtd_transcriber/`)
 Whisper-small, progressively fine-tuned on UltraSuite UXTD (child speech corpus) plus synthetic
@@ -49,8 +50,9 @@ TTS audio of the app's own product vocabulary:
 | LoRA + full product vocabulary (250 words) | Added all 250 original product words as synthetic audio | 94.8% on training vocabulary — but untested on unseen words |
 | **LoRA + expanded vocabulary (491 words, current)** | Expanded word bank (wider category variety: animals, food, body parts, verbs, emotions, new phrase/sentence structures), retrained | **96.0% phoneme accuracy on a genuinely held-out 30-word set never seen in training, vs 80.0% for stock Whisper** — verified stable across 3 independent training seeds (96.0% / 98.2% / 96.0%, spread 2.2 points) |
 
-![In-sample accuracy](docs/assets/in_sample_accuracy.png)
-![Held-out generalization](docs/assets/generalization_holdout.png)
+<img src="docs/assets/in_sample_accuracy.png" width="420">
+<img src="docs/assets/generalization_holdout.png" width="460">
+
 
 ## Honest results (not just the headline number)
 
@@ -69,7 +71,8 @@ Rigor checks run against the current model, including the uncomfortable ones:
   planned fix is routing scoring through the phoneme classifier above instead of ASR-transcript
   text, which is not yet integrated.
 
-![Error type rates](docs/assets/error_type_rates.png)
+<img src="docs/assets/error_type_rates.png" width="460">
+
 
 ## Known open items
 

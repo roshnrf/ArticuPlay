@@ -14,8 +14,6 @@ swappable per-language LoRA adapter on a shared multilingual Whisper base, plus 
 `phonemizer` language-code swap for IPA scoring) — but no second-language adapter has been
 built or trained yet. Don't read "multilingual-ready architecture" as "multilingual today."
 
-![Development progress](docs/assets/dev_progress.png)
-
 ## Stack
 
 - **Backend**: FastAPI + SQLAlchemy (async) + Alembic + PostgreSQL (Supabase)

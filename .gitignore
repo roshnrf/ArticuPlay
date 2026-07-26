@@ -1,0 +1,37 @@
+# Secrets
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Model artifacts (large binaries — not suited to git, regenerate via the scripts alongside them)
+backend/ml_models/
+research/uxtd_transcriber/uxtd_whisper_small/
+research/uxtd_transcriber/uxtd_whisper_small_lora/
+research/uxtd_transcriber/uxtd_whisper_small_lora_augmented/
+research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/
+research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab_seed*/
+research/uxtd_transcriber/uxtd_whisper_small_merged/
+research/uxtd_transcriber/uxtd_whisper_small_ct2/
+research/phone_classifier/*_model/
+research/phone_classifier/*.pt
+__pycache__/
+
+# Research corpus data (UltraSuite — CC BY-NC 4.0, not ours to redistribute; scripts stay, data doesn't)
+research/uxtd_transcriber/data/
+research/phone_classifier/data/
+
+# OS
+.DS_Store
+Thumbs.db

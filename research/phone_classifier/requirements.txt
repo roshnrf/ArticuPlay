@@ -1,0 +1,6 @@
+torch==2.13.0  # 2.5.1 lacks sm_120 (Blackwell/RTX 50-series) kernel support — silently "available" but real ops fail
+torchaudio==2.11.0  # torchaudio's version numbering diverged from torch's — this is the compatible pairing for torch 2.13.0
+transformers==4.46.3
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==2.1.3

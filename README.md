@@ -117,6 +117,68 @@ Rigor checks run against the current model, including the uncomfortable ones:
 <img src="docs/assets/error_type_rates.png" width="460">
 
 
+## Difficulties faced, from the start to now
+
+Not a smooth build — real problems hit at every layer, most requiring root-cause work rather
+than a quick patch. Resolved unless marked otherwise.
+
+**Environment & tooling**
+- Windows Smart App Control blocked compiled Python wheels (phonemizer's `regex` dependency) —
+  moved development to WSL2 rather than fight the OS policy per-package.
+- RTX 5070 Ti (Blackwell) needed `torch==2.13.0`; `torch.cuda.is_available()` returning `True`
+  wasn't enough evidence — a real matmul silently lacked kernel support on the pinned version.
+  Lesson: always test a real op on new hardware, not just the availability flag.
+- `peft` + `torch.distributed.tensor` lazy-import conflict — hit **three separate times** across
+  different scripts (transcriber training, phone classifier training, phone classifier
+  production service) before the pattern was recognized as systemic rather than one-off.
+- Manual `nohup`/`disown` didn't reliably keep background processes alive through this WSL
+  bridge; switched to the tooling's own background-process tracking instead.
+- Converting the fine-tuned model to CTranslate2 format needed a newer `transformers` than the
+  training venv had — used an isolated venv rather than risk breaking the training setup.
+
+**Model training & data quality**
+- UXTD corpus contamination (session-administration speech mixed into training labels) — found
+  in two rounds; a first regex filter only caught 37% of it, a full manual audit of the label
+  vocabulary found the real number was 66%, fixed with an exact-match denylist.
+- Level 5 (sentence-level) accuracy collapsed after the contamination fix — diagnosed as missing
+  grammatical-sentence-structure exposure, not an audio-quality issue, fixed via synthetic
+  sentence augmentation.
+- Repetition-loop / premature-truncation failures ("cone" → "cone, cone, cone...") — beam search
+  fixed most of these at zero retraining cost; a base-model "98.8%" accuracy figure turned out to
+  be inflated by exactly this kind of garbage getting substring-matched as correct.
+- The phone classifier's reported 67.9% came from 8 cross-validation folds that never saved a
+  single deployable checkpoint — had to retrain one final model on all real examples before it
+  could actually be integrated.
+
+**Evaluation rigor**
+- Every early "beats base Whisper" claim was tested on the same vocabulary the model trained
+  on — not a real generalization test. Rebuilding a genuine held-out test took two attempts: a
+  first 50-word holdout was judged too small/arbitrary, replaced with a larger, wider-variety
+  vocabulary expansion (491 words) plus a fresh, never-trained 30-word test set.
+- Code for two of those earlier stages had been edited in place before this repo's git history
+  began, so the code behind an early reported number became unrecoverable from `git log` —
+  manually reconstructed and preserved in [`archive/`](archive/).
+- Tried lowering the pass-threshold to fix false-reject — empirically found it's a wash (trades
+  false-reject for false-accept roughly 1-for-1, current threshold is actually near-optimal).
+  **Still open**: false-reject sits at 46%, root cause understood (unbiased ASR mishears real
+  correct speech more often) but not yet fixed.
+
+**Security** (found via a full audit, not a diff review — see commit history for verification)
+- `/session/*` endpoints had **zero authentication** — any request with a `child_id` or
+  `session_id` UUID could read a child's therapy history or write fabricated scores into it, no
+  login required. Root cause: written before the auth pattern was established elsewhere in the
+  codebase and never retrofitted. Fixed by mirroring the correct pattern already used for
+  children — verified live (unauthenticated → 401, cross-user access → 404, legit flow
+  unaffected).
+- Supabase flagged `rls_disabled_in_public` + `sensitive_columns_exposed` as critical — every
+  public-schema table (including a users table with password hashes) was reachable through
+  Supabase's auto-generated API, independent of anything the backend's own auth did, because
+  this project only ever used a direct Postgres connection and nobody had visited the dashboard
+  to lock down the auto-API. Fixed by enabling Row-Level Security on all tables (confirmed zero
+  effect on the app itself — its DB role is a superuser, which bypasses RLS by design). Missed
+  `alembic_version` (not an app model, so absent from the first pass) on the first attempt —
+  caught by Supabase's scanner and fixed in a follow-up migration.
+
 ## Known open items
 
 - Remaining 3% false-accept and the flat 46% false-reject on real disordered speech — the

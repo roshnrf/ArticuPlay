@@ -2,6 +2,8 @@
 
 ## ⏳ Deferred / Follow-up Items (check this list at every checkpoint)
 
+- [x] **CRITICAL security fixes** (2026-07-29) — `/session/*` had zero authentication (fixed, mirrors `ChildService`'s ownership pattern), Supabase RLS enabled on all 7 tables (backend's superuser role bypasses it, verified working). See lessons.md.
+
 - [ ] **Multi-language support** (2026-07-26, Rosh) — no new base model needed, Whisper already multilingual. Per-language = new LoRA adapter trained on that language's audio + swap `phonemizer` language code in `to_ipa()`. Explicitly deferred by Rosh until current vocab-expansion + generalization work is done.
 
 - [x] **Vocabulary lock-in test** (2026-07-26) — 50 brand-new never-trained words added to product DB, tested against fullvocab model. Result: lora 95.2% vs base 82.7%. See `tasks/lessons.md`. This is the real "beats base Whisper" number — prior 94.8% figure was same-vocabulary-as-training, not a generalization test.

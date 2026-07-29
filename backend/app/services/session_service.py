@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.child import Child
 from app.models.drill_item import DrillItem
 from app.models.drill_session import DrillSession
 from app.schemas.session import ScoreRequest, ScoreResult, SessionCreate, SessionRead
@@ -17,12 +18,29 @@ PASS_THRESHOLD = 0.8
 
 
 class SessionService:
-    """Drill session lifecycle: start, item-level scoring (compare_ipa), and completion."""
+    """Drill session lifecycle: start, item-level scoring (compare_ipa), and completion.
+    Every operation is scoped to the requesting parent — a session/child is never visible
+    or writable by anyone else, same discipline as ChildService."""
 
-    def __init__(self, db: AsyncSession):
+    def __init__(self, db: AsyncSession, parent_id: UUID):
         self.db = db
+        self.parent_id = parent_id
+
+    async def _get_owned_child(self, child_id: UUID) -> Child:
+        child = await self.db.get(Child, child_id)
+        if not child or child.parent_id != self.parent_id:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Child not found")
+        return child
+
+    async def _get_owned_session(self, session_id: UUID) -> DrillSession:
+        session = await self.db.get(DrillSession, session_id)
+        if not session:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Session not found")
+        await self._get_owned_child(session.child_id)  # raises 404 if not owned
+        return session
 
     async def start(self, body: SessionCreate) -> SessionRead:
+        await self._get_owned_child(body.child_id)
         session = DrillSession(child_id=body.child_id, language=body.language, level=body.level)
         self.db.add(session)
         await self.db.commit()
@@ -30,19 +48,16 @@ class SessionService:
         return SessionRead.model_validate(session)
 
     async def get(self, session_id: UUID) -> SessionRead:
-        session = await self.db.get(DrillSession, session_id)
-        if not session:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "Session not found")
+        session = await self._get_owned_session(session_id)
         return SessionRead.model_validate(session)
 
     async def list_for_child(self, child_id: UUID) -> list[SessionRead]:
+        await self._get_owned_child(child_id)
         result = await self.db.scalars(select(DrillSession).where(DrillSession.child_id == child_id))
         return [SessionRead.model_validate(s) for s in result.all()]
 
     async def score(self, body: ScoreRequest) -> ScoreResult:
-        session = await self.db.get(DrillSession, body.session_id)
-        if not session:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "Session not found")
+        session = await self._get_owned_session(body.session_id)
 
         target_ipa = to_ipa(body.target_word, language=body.language)
         child_ipa = to_ipa(body.child_transcript, language=body.language)
@@ -96,9 +111,7 @@ class SessionService:
         )
 
     async def complete(self, session_id: UUID) -> SessionRead:
-        session = await self.db.get(DrillSession, session_id)
-        if not session:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "Session not found")
+        session = await self._get_owned_session(session_id)
 
         passed_flags = (
             await self.db.scalars(select(DrillItem.passed).where(DrillItem.session_id == session_id))

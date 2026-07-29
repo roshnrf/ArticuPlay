@@ -85,23 +85,24 @@ def chart_generalization():
 
 
 def chart_error_type():
-    fig, ax = plt.subplots(figsize=(6.2, 4))
+    fig, ax = plt.subplots(figsize=(7, 4.4))
     categories = ["False-accept\n(missed a real error)", "False-reject\n(flagged a correct one)"]
-    with_bias = [28, 32]
-    without_bias = [15, 44]
-    x = [0, 1.1]
-    width = 0.36
-    bars1 = ax.bar([i - width / 2 for i in x], with_bias, width, label="With target-word bias (old)", color="#fb923c", zorder=3)
-    bars2 = ax.bar([i + width / 2 for i in x], without_bias, width, label="Without bias (current)", color=BLUE, zorder=3)
-    for bar, v in zip(bars1, with_bias):
-        _label(ax, bar, v)
-    for bar, v in zip(bars2, without_bias):
-        _label(ax, bar, v)
+    stage1 = [28, 32]   # target-word bias (old)
+    stage2 = [15, 44]   # unbiased decoding
+    stage3 = [3, 46]    # + phone classifier (current)
+    x = [0, 1.3]
+    width = 0.3
+    bars1 = ax.bar([i - width for i in x], stage1, width, label="Target-word bias (old)", color="#fb923c", zorder=3)
+    bars2 = ax.bar(x, stage2, width, label="Unbiased decoding", color="#94a3b8", zorder=3)
+    bars3 = ax.bar([i + width for i in x], stage3, width, label="+ Phone classifier (current)", color=BLUE, zorder=3)
+    for bars, vals in [(bars1, stage1), (bars2, stage2), (bars3, stage3)]:
+        for bar, v in zip(bars, vals):
+            _label(ax, bar, v)
     ax.set_xticks(x)
     ax.set_xticklabels(categories)
     _style_bar_axes(ax, 58)
     ax.set_title("Error-type rates on real disordered child speech\nUXSSD, clinician-labeled, n=200")
-    ax.legend(fontsize=10, loc="upper center", frameon=False)
+    ax.legend(fontsize=9.5, loc="upper center", frameon=False)
     fig.tight_layout()
     fig.savefig(f"{OUT_DIR}/error_type_rates.png", dpi=200)
     plt.close(fig)

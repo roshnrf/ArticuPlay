@@ -79,12 +79,12 @@
   <line x1="725" y1="225" x2="660" y2="400" class="edge"/>
 
   <!-- Phone classifier -->
-  <rect x="780" y="400" width="180" height="90" class="box partial"/>
-  <text x="870" y="425" text-anchor="middle" class="label" font-size="13">Phone Classifier</text>
-  <text x="870" y="442" text-anchor="middle" class="sublabel">67.9% (LoRA)</text>
-  <text x="870" y="458" text-anchor="middle" class="sublabel">not yet wired into scoring</text>
-  <text x="950" y="478" text-anchor="end" class="tag tag-partial">BUILT, NOT INTEGRATED</text>
-  <line x1="555" y1="225" x2="870" y2="400" class="edge-dashed"/>
+  <rect x="780" y="400" width="180" height="90" class="box done"/>
+  <text x="870" y="422" text-anchor="middle" class="label" font-size="13">Phone Classifier</text>
+  <text x="870" y="439" text-anchor="middle" class="sublabel">67.9% (LoRA), one-directional gate</text>
+  <text x="870" y="455" text-anchor="middle" class="sublabel">false-accept 28% → 3%</text>
+  <text x="960" y="475" text-anchor="end" class="tag tag-done">DONE — INTEGRATED</text>
+  <line x1="555" y1="225" x2="870" y2="400" class="edge"/>
 
   <!-- Multi-language -->
   <rect x="280" y="550" width="420" height="70" class="box planned"/>
@@ -97,9 +97,7 @@
   <g transform="translate(30, 20)">
     <rect x="0" y="0" width="16" height="16" rx="3" class="done"/>
     <text x="22" y="12" class="sublabel">Done</text>
-    <rect x="0" y="24" width="16" height="16" rx="3" class="partial"/>
-    <text x="22" y="36" class="sublabel">Built, not integrated</text>
-    <rect x="0" y="48" width="16" height="16" rx="3" class="planned"/>
-    <text x="22" y="60" class="sublabel">Planned only</text>
+    <rect x="0" y="24" width="16" height="16" rx="3" class="planned"/>
+    <text x="22" y="36" class="sublabel">Planned only</text>
   </g>
 </svg>

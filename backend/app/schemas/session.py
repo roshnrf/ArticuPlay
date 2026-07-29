@@ -30,6 +30,7 @@ class ScoreRequest(BaseModel):
     language: str = "en"
     child_transcript: str
     attempt_num: int = 1
+    phone_classifier_flag: bool | None = None  # from ASRResult — True downgrades a transcript-based pass
 
 
 class PhonemeErrorRead(BaseModel):
@@ -45,3 +46,4 @@ class ScoreResult(BaseModel):
     errors: list[PhonemeErrorRead]
     passed: bool
     attempt_num: int
+    phone_classifier_override: bool = False

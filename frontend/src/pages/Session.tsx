@@ -84,6 +84,7 @@ export function Session() {
         language: child!.language,
         child_transcript: asrResult.transcript,
         attempt_num: attemptNum,
+        phone_classifier_flag: asrResult.phone_classifier_flag,
       })
       setLastResult(result)
       if (result.passed) setStarsEarned((s) => s + 1)

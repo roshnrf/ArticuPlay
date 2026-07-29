@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str                # Parent tip generation
     WHISPER_MODEL_SIZE: str = "base"   # faster-whisper model size (self-hosted, no API key)
     WHISPER_MODEL_PATH: str | None = "ml_models/storyweaver_whisper_v1"  # our LoRA fine-tuned model (CTranslate2 format); overrides WHISPER_MODEL_SIZE when set
+    PHONE_CLASSIFIER_PATH: str | None = "ml_models/phone_classifier_v1"  # audio-based velar/rhotic correctness check; None/missing disables the feature gracefully
 
     # Auth
     JWT_SECRET: str

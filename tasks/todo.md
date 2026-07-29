@@ -13,7 +13,7 @@
 - [x] **Real deployment audio path (webm)** (2026-07-26) — confirmed working end-to-end against live `/session/transcribe` endpoint, real webm/opus format, no crash/decode errors. See lessons.md.
 - [x] **Fine-tuned model integrated into production** (2026-07-26) — Rosh chose "do both": merged LoRA + converted to CTranslate2 + wired into `ASRService` + unbiased decoding, all bundled together so what's live matches what was tested. Verified end-to-end via live endpoint. See lessons.md for full steps.
 - [ ] **CPU latency tight (~3.0-3.5s, near the 3s budget, no headroom)** (2026-07-26) — not beam_size (tested, ruled out), it's webm decode + FastAPI overhead on top of ~2s CPU inference. Not fixed — needs webm-decode optimization or GPU hosting if a live pilot needs more margin. Flag before real users test it.
-- [ ] **Real fix for false-accept/reject** — route scoring through the already-built 67.9% phone classifier instead of ASR-transcription-text + `compare_ipa`, since 15% false-accept persists even unbiased. Not started, bigger task.
+- [x] **Real fix for false-accept/reject** (2026-07-29) — phone classifier integrated as a one-directional gate on `session_service.score()`. Verified through the live pipeline: false-accept 15%→3%, false-reject flat (44%→46%, noise). See lessons.md for full details.
 - [x] **Latency measurement** (2026-07-26) — mean 899ms, p95 2319ms, max 2464ms (GPU inference only, beam=5). Budget 3000ms: pass, but tight tail. Correlates with the loop-failure cases — see lessons.md.
 
 - [ ] **Phase 2 — full Whisper fine-tune** (research track). Two-stage: UXTD broad adaptation, then UXSSD+Cleft specialization, LoRA + full fine-tune comparison. Scoped in the plan file, not built yet.

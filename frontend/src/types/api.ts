@@ -70,6 +70,7 @@ export interface ScoreRequest {
   language: string
   child_transcript: string
   attempt_num: number
+  phone_classifier_flag: boolean | null
 }
 
 export interface PhonemeErrorRead {
@@ -85,6 +86,7 @@ export interface ScoreResult {
   errors: PhonemeErrorRead[]
   passed: boolean
   attempt_num: number
+  phone_classifier_override: boolean
 }
 
 export interface ASRResult {
@@ -92,4 +94,5 @@ export interface ASRResult {
   language: string
   latency_sec: number
   words: { word: string; start: number; end: number }[] | null
+  phone_classifier_flag: boolean | null
 }

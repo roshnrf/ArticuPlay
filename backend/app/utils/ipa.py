@@ -15,6 +15,22 @@ def to_ipa(text: str, language: str = "en") -> str:
     return phonemize(text, language=espeak_lang, backend="espeak", strip=True)
 
 
+# The phone classifier (research/phone_classifier) was trained only on English velar
+# (/k/, /g/) and rhotic (/ɹ/) real disordered-speech examples — applying it to words
+# without these phones, or to other languages, would be scoring outside its validated
+# distribution.
+_PHONE_CHECK_TARGETS = {"k", "g", "ɹ"}
+
+
+def needs_phone_check(word: str, language: str = "en") -> bool:
+    """Whether this word's target phonemes fall in the phone classifier's trained
+    distribution (velar/rhotic, English only)."""
+    if language != "en":
+        return False
+    ipa = to_ipa(word, language=language)
+    return any(p in _PHONE_CHECK_TARGETS for p in tokenize_ipa(ipa))
+
+
 # espeak-ng's English (en-us) IPA symbol inventory. Multi-character symbols first
 # (longest match wins) so e.g. "tʃ" is never split into "t" + "ʃ".
 _MULTI_CHAR_PHONEMES = [

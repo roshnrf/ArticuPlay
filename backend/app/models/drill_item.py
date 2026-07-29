@@ -28,6 +28,10 @@ class DrillItem(Base):
     errors: Mapped[list] = mapped_column(JSON, default=list)
     attempt_num: Mapped[int] = mapped_column(Integer, default=1)  # 1-3, auto-advance after 3
     passed: Mapped[bool] = mapped_column(Boolean, default=False)
+    # True when compare_ipa scored this as a pass but the phone classifier (trained on real
+    # disordered speech) disagreed and downgraded it — see session_service.score(). Tracked
+    # separately from `errors` since it's a different signal (audio-based, not transcript-based).
+    phone_classifier_override: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )

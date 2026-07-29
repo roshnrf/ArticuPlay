@@ -50,6 +50,17 @@ class SessionService:
         passed = result.accuracy >= PASS_THRESHOLD
         errors_as_dicts = [asdict(e) for e in result.errors]
 
+        # One-directional gate: the phone classifier only ever downgrades a transcript-based
+        # pass, never upgrades a fail. compare_ipa scores the ASR transcript, which can't catch
+        # a real articulation error when the transcript still reads as the right word (measured
+        # false-accept 15-28% on real disordered speech — see tasks/lessons.md). The classifier
+        # judges the raw audio directly, so it catches some of what the transcript misses. It's
+        # not applied the other way (fail->pass) because its own error rate could just trade one
+        # failure mode for another; only closing the clinically dangerous direction is worth the risk.
+        phone_classifier_override = passed and body.phone_classifier_flag is True
+        if phone_classifier_override:
+            passed = False
+
         item = DrillItem(
             session_id=body.session_id,
             language=body.language,
@@ -62,6 +73,7 @@ class SessionService:
             errors=errors_as_dicts,
             attempt_num=body.attempt_num,
             passed=passed,
+            phone_classifier_override=phone_classifier_override,
         )
         self.db.add(item)
 
@@ -80,6 +92,7 @@ class SessionService:
             errors=errors_as_dicts,
             passed=passed,
             attempt_num=body.attempt_num,
+            phone_classifier_override=phone_classifier_override,
         )
 
     async def complete(self, session_id: UUID) -> SessionRead:

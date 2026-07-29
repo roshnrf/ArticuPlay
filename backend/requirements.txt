@@ -18,6 +18,14 @@ edge-tts==7.2.8
 faster-whisper==1.1.1
 phonemizer==3.3.0
 
+# Phone classifier (velar/rhotic audio-based scoring, app/services/phone_classifier_service.py).
+# Install CPU-only torch to avoid pulling multi-GB CUDA wheels on this CPU-hosted backend:
+#   pip install torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu
+# then the rest of this file normally.
+torch==2.13.0
+transformers==4.46.3
+peft==0.19.1
+
 pytest==8.3.4
 pytest-asyncio==0.25.0
 httpx==0.28.1

@@ -20,9 +20,8 @@ built or trained yet. Don't read "multilingual-ready architecture" as "multiling
 
 <img src="docs/assets/architecture.svg" width="820">
 
-Solid boxes/lines are shipped and integrated. Orange = built and validated but not wired into
-the live scoring path yet (the phone classifier). Dashed gray = designed for, not built
-(multi-language adapters).
+Green/solid = shipped and integrated. Dashed gray = designed for, not built (multi-language
+adapters).
 
 ## Stack
 
@@ -74,20 +73,31 @@ Rigor checks run against the current model, including the uncomfortable ones:
 - **Latency**: ~2s CPU inference, ~3.0-3.5s end-to-end through the real API (webm decode + request
   overhead) — at the edge of the 3s/item budget, no headroom.
 - **Real disordered-speech error detection** (the model's actual clinical job, tested on the
-  UltraSuite UXSSD corpus of real children with CAS, clinician-labeled): **false-accept 28% /
-  false-reject 32%** with target-word decoding bias; **15% / 44%** without it. This is the
-  honest weak point — word-recognition generalizes well, but reliably catching a genuinely wrong
-  pronunciation (vs. one that still sounds like the right word) is still an open problem. The
-  planned fix is routing scoring through the phoneme classifier above instead of ASR-transcript
-  text, which is not yet integrated.
+  UltraSuite UXSSD corpus of real children with CAS, clinician-labeled), measured through the
+  live deployed pipeline, not just the raw model:
+
+  | Stage | False-accept | False-reject |
+  |---|---|---|
+  | Target-word decoding bias (original) | 28% | 32% |
+  | Unbiased decoding | 15% | 44% |
+  | **+ Phoneme classifier gate (current)** | **3%** | 46% |
+
+  Transcript-based scoring alone can't catch a real articulation error when the transcript
+  still reads as the right word. Routing through the phoneme classifier as a one-directional
+  gate (only ever downgrades a pass, never upgrades a fail) closed most of that gap — false-accept
+  dropped from 28% to 3%. False-reject is flat (a few real-correct attempts get wrongly downgraded
+  by the classifier's own ~68% accuracy — the accepted cost of closing the more dangerous
+  direction first).
 
 <img src="docs/assets/error_type_rates.png" width="460">
 
 
 ## Known open items
 
-- Phoneme-classifier-based error scoring (real fix for the false-accept/reject numbers above)
+- Remaining 3% false-accept and the flat 46% false-reject on real disordered speech — the
+  phoneme classifier itself is only ~68% accurate, a ceiling on how far this approach alone gets
 - Real webm/opus browser audio confirmed working end-to-end, but not yet stress-tested at scale
+- CPU latency (~3s, no headroom) — needs webm-decode optimization or GPU hosting for a real pilot
 - Multi-language support — architecture supports it (swappable per-language LoRA adapter + a
   `phonemizer` language-code swap), not yet built for a second language
 

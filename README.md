@@ -62,6 +62,24 @@ TTS audio of the app's own product vocabulary:
 <img src="docs/assets/in_sample_accuracy.png" width="420">
 <img src="docs/assets/generalization_holdout.png" width="460">
 
+### Model version history
+
+Every reported number traces to real code — current stages are separate files in
+`research/uxtd_transcriber/`; earlier stages that got edited in place (before this repo's history
+began) are manually reconstructed in [`archive/`](archive/) so nothing is lost. Full mapping:
+
+| Result | Code |
+|---|---|
+| 60.9% phone classifier | `research/phone_classifier/train_classifier.py` |
+| 67.9% phone classifier | `research/phone_classifier/train_classifier_unfrozen.py` |
+| 94.8% in-sample, 250-word vocab | [`archive/train_lora_fullvocab_250vocab.py`](archive/train_lora_fullvocab_250vocab.py) |
+| 82.7% → 95.2%, n=50 (superseded) | [`archive/evaluate_new_words_heldout_50word_v2.py`](archive/evaluate_new_words_heldout_50word_v2.py) |
+| **80.0% → 96.0%, n=30 (current)** | `research/uxtd_transcriber/train_lora_fullvocab.py` + `evaluate_new_words_heldout.py` |
+| 28% → 15% → 3% false-accept | `archive/asr_service_v1_base_biased.py` → git history of `backend/app/services/asr_service.py` |
+
+**Going forward**: any time a script gets edited in place to produce a new result rather than
+saved as a new file, the pre-edit version goes in `archive/` before the edit — so the code
+behind every number stays inspectable, not just the latest one.
 
 ## Honest results (not just the headline number)
 

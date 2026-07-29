@@ -64,18 +64,25 @@ TTS audio of the app's own product vocabulary:
 
 ### Model version history
 
-Every reported number traces to real code — current stages are separate files in
-`research/uxtd_transcriber/`; earlier stages that got edited in place (before this repo's history
-began) are manually reconstructed in [`archive/`](archive/) so nothing is lost. Full mapping:
+Every distinct model/code version this project has produced, in order — #1 is the first,
+the highest number is what's live today. Current versions link to their real file in this repo;
+retired versions that got edited in place (before this repo's history began) link into
+[`archive/`](archive/) so nothing is lost.
 
-| Result | Code |
-|---|---|
-| 60.9% phone classifier | `research/phone_classifier/train_classifier.py` |
-| 67.9% phone classifier | `research/phone_classifier/train_classifier_unfrozen.py` |
-| 94.8% in-sample, 250-word vocab | [`archive/train_lora_fullvocab_250vocab.py`](archive/train_lora_fullvocab_250vocab.py) |
-| 82.7% → 95.2%, n=50 (superseded) | [`archive/evaluate_new_words_heldout_50word_v2.py`](archive/evaluate_new_words_heldout_50word_v2.py) |
-| **80.0% → 96.0%, n=30 (current)** | `research/uxtd_transcriber/train_lora_fullvocab.py` + `evaluate_new_words_heldout.py` |
-| 28% → 15% → 3% false-accept | `archive/asr_service_v1_base_biased.py` → git history of `backend/app/services/asr_service.py` |
+| # | Version | Result | Code |
+|---|---|---|---|
+| 1 | Phone classifier v1 — frozen encoder | 60.9% | [`train_classifier.py`](research/phone_classifier/train_classifier.py) |
+| 2 | Phone classifier v2 — LoRA-unfrozen encoder | 67.9% | [`train_classifier_unfrozen.py`](research/phone_classifier/train_classifier_unfrozen.py) |
+| 3 | Transcriber — full fine-tune | Overfit / catastrophic forgetting | [`train.py`](research/uxtd_transcriber/train.py) |
+| 4 | Transcriber — LoRA, UXTD data only | Fixed overfitting, vocab mismatch remained | [`train_lora.py`](research/uxtd_transcriber/train_lora.py) |
+| 5 | Transcriber — LoRA + sentence augmentation | Fixed Level 5 (sentence) collapse | [`train_lora_augmented.py`](research/uxtd_transcriber/train_lora_augmented.py) |
+| 6 | Transcriber — LoRA + 250-word vocab | 94.8% in-sample | [`archive/train_lora_fullvocab_250vocab.py`](archive/train_lora_fullvocab_250vocab.py) |
+| 7 | Held-out eval of #6 vs base, n=50 | 82.7% → 95.2% *(superseded)* | [`archive/evaluate_new_words_heldout_50word_v2.py`](archive/evaluate_new_words_heldout_50word_v2.py) |
+| 8 | Production ASRService v1 — base Whisper + target-word bias | false-accept 28% / false-reject 32% | [`archive/asr_service_v1_base_biased.py`](archive/asr_service_v1_base_biased.py) |
+| 9 | Transcriber — LoRA + 491-word vocab | **80.0% → 96.0%, n=30, current** — stable across seeds (96.0/98.2/96.0) | [`train_lora_fullvocab.py`](research/uxtd_transcriber/train_lora_fullvocab.py) + [`evaluate_new_words_heldout.py`](research/uxtd_transcriber/evaluate_new_words_heldout.py) |
+| 10 | Production ASRService v2 — #9's model, bias removed | false-accept 15% / false-reject 44% | "before" side of [commit 2c1ab46](https://github.com/roshnrf/ArticuPlay/commit/2c1ab460aa4ba69266f6f41ec10e16207229dc4c) |
+| 11 | Phone classifier — final deployable checkpoint (trained on all 864 real examples, no CV holdout) | Ready to integrate | [`train_classifier_final.py`](research/phone_classifier/train_classifier_final.py) |
+| 12 | Production ASRService v3 — #10 + phone classifier gate | **false-accept 3% / false-reject 46%, current** | [`asr_service.py`](backend/app/services/asr_service.py) + [`phone_classifier_service.py`](backend/app/services/phone_classifier_service.py) |
 
 **Going forward**: any time a script gets edited in place to produce a new result rather than
 saved as a new file, the pre-edit version goes in `archive/` before the edit — so the code

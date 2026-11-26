@@ -55,9 +55,18 @@ async def test_transcribe_assembles_transcript_and_words():
 
 
 @pytest.mark.asyncio
-async def test_transcribe_passes_target_word_as_initial_prompt():
-    await ASRService().transcribe(b"fake-audio-bytes", language="en", target_word="rabbit")
-    assert _FakeWhisperModel.last_call_kwargs["initial_prompt"] == "rabbit"
+async def test_transcribe_does_not_bias_decoding_toward_any_prompt():
+    """The target word must never reach Whisper as a hint: biasing made the model write back
+    the correct spelling over a real articulation error (false-accept 28% vs 15% unbiased)."""
+    await ASRService().transcribe(b"fake-audio-bytes", language="en")
+    assert _FakeWhisperModel.last_call_kwargs.get("initial_prompt") is None
+    assert _FakeWhisperModel.last_call_kwargs.get("prompt_ids") is None
+
+
+@pytest.mark.asyncio
+async def test_transcribe_uses_validated_beam_size():
+    await ASRService().transcribe(b"fake-audio-bytes")
+    assert _FakeWhisperModel.last_call_kwargs["beam_size"] == 5
 
 
 @pytest.mark.asyncio

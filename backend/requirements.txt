@@ -14,8 +14,9 @@ bcrypt==4.0.1  # passlib 1.7.4's bcrypt self-test breaks on bcrypt>=4.1, pin exp
 python-multipart==0.0.20
 
 google-generativeai==0.8.3
-edge-tts==7.2.8
+edge-tts==7.3.1  # 7.2.8 gets 403 from Microsoft's endpoint as of 2026-11 (stale client token version)
 faster-whisper==1.1.1
+av==16.1.0  # faster-whisper 1.1.1 passes metadata_errors= to av.open(), removed in newer PyAV (19.x fails)
 phonemizer==3.3.0
 
 # Phone classifier (velar/rhotic audio-based scoring, app/services/phone_classifier_service.py).

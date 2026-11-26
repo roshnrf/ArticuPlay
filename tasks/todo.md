@@ -1,3 +1,65 @@
+# ArticuPlay — Restore + Demo Plan (started 2026-11-16)
+
+Context: local project folder (`Documents\sw_2`), the WSL Ubuntu disk, all trained model
+artifacts and the UltraSuite data were found deleted in Nov 2026. GitHub was the only surviving
+copy (code + phone classifier weights). Goal of this plan is the small version only: get the app
+running again, record a real demo, and make the public claims accurate. No new research.
+
+**A. Environment**
+- [x] Repo re-cloned to `C:\Users\rosha\Documents\ArticuPlay`
+- [x] WSL repaired by Rosh (v3.0.5), fresh Ubuntu 26.04
+- [x] System packages: espeak-ng 1.52, ffmpeg 8, PostgreSQL 18 (Node still to install)
+- [x] Python 3.12 venv at `~/articuplay/venv` (WSL-native, via uv), pinned requirements installed
+- [x] Real GPU op verified: torch 2.13.0+cu130 matmul on the RTX 5070 Ti
+- [x] Local Postgres `articuplay` DB, generated `.env`, migrations at head, 491 words seeded
+  - Supabase roles `anon`/`authenticated`/`service_role` created as empty NOLOGIN roles so the
+    RLS migrations run unmodified against plain Postgres
+- [x] `edge-tts` 7.2.8 -> 7.3.1 (old client gets 403 from Microsoft's endpoint)
+- [x] Hardcoded `Documents/sw_2` paths in research scripts -> `Documents/ArticuPlay`
+- [x] Repo checked out with LF endings (`core.autocrlf=false` locally; CRLF broke the .sh scripts)
+
+**B. Data**
+- [x] Pulled UXTD (4609 wav, 58 speakers, 1.2 GB) + UXSSD (3729 wav, 696 labels, 864 score rows)
+- [x] `augment_with_full_vocab.py` fixed to exclude v2/v3 words (DB now holds 491, not the 250
+      it held when the script first ran; unfiltered it would double-count 241 words)
+- [x] Rebuilt splits: train 1243 / val 136 / test 188 (58 speakers, 3042 admin labels filtered),
+      plus 250 + 241 synthetic clips = 1734 training rows, identical counts to July
+
+**C. Model**
+- [x] Retrained LoRA transcriber (seed 42, 3 epochs, 5 min on GPU): 1,769,472 trainable params
+      (0.7267%), final eval_loss 0.134
+- [x] Held-out evaluation, 30 never-trained words: **LoRA 96.7% vs base 86.7%**
+      (July: 96.0% vs 80.0%). Base differs because the TTS test audio is regenerated each run and
+      edge-tts changed version. LoRA still loops on one word ("moth"); base loops on five.
+      Raw results: `research/uxtd_transcriber/data/heldout_results_2026-11-16.json` (gitignored dir)
+- [x] Merged + converted to CTranslate2 (ctranslate2 4.9.0, isolated `~/articuplay/ct2venv`),
+      copied to `backend/ml_models/storyweaver_whisper_v1/`
+- [x] `av` pinned to 16.1.0 (faster-whisper 1.1.1 breaks on PyAV 19)
+- [x] Committed phone classifier weights copied to `backend/ml_models/phone_classifier_v1/`, load OK
+- [ ] Back up model artifacts off this PC (LoRA adapter is only 7 MB; awaiting Rosh's choice)
+
+**D. App**
+- [x] Local Postgres, `.env`, migrations, seed word content
+- [x] Backend (:8000) + frontend (:5173) running in WSL, reachable from Windows
+- [x] End-to-end through the real API with webm/opus audio (2026-11-16): register, login,
+      unauthenticated call rejected (401), create child, start session, transcribe, score.
+      "wabbit" -> substitution r->w; "poon" -> cluster_reduction; "nana" -> syllable_deletion;
+      "tiger"/"water" passed. A correct "rabbit" was rejected by the phone-classifier gate
+      (live false reject, the known open issue). Latency 2.5-3.5 s per attempt on CPU.
+- [ ] Rosh: real-voice test in the browser at http://localhost:5173
+- [ ] UI still says "StoryWeaver"; decide whether to rename before recording
+
+**E. Demo**
+- [ ] Demo script (correct accept, caught error, a false reject shown on camera, progress screen)
+- [ ] Rosh records the video
+
+**F. Accuracy of public claims**
+- [ ] README: test data is children with speech sound disorders, not confirmed CAS
+- [ ] README: state plainly that no child has used the app live; add run instructions
+- [ ] Portfolio page: same corrections, embed video, add failures section
+
+---
+
 # StoryWeaver V2 — Week 1 Scaffold — Progress Log
 
 ## ⏳ Deferred / Follow-up Items (check this list at every checkpoint)

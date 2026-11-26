@@ -8,7 +8,7 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 
 from train import MODEL_NAME
 
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"
+LORA_DIR = str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final")
 MERGED_DIR = Path(__file__).parent / "uxtd_whisper_small_merged"
 
 

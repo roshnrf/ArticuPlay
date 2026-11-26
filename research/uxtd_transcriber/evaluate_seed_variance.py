@@ -1,6 +1,7 @@
 """Variance check: same fresh 30-word holdout, 3 independently trained
 models (seeds 42/43/44), same architecture/data/hyperparams. Reuses audio
 already synthesized at /tmp/heldout_new_words_v2 by evaluate_new_words_heldout.py."""
+from pathlib import Path
 import json
 import sys
 
@@ -9,7 +10,7 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 
 from train import MODEL_NAME, WHISPER_SAMPLE_RATE, load_audio_resampled
 
-sys.path.insert(0, "/mnt/c/Users/rosha/Documents/sw_2/backend")
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
 from app.utils.compare_ipa import compare_ipa
 from app.utils.ipa import to_ipa
 
@@ -17,9 +18,9 @@ AUDIO_DIR = "/tmp/heldout_new_words_v2"
 device = "cuda"
 
 SEEDS = {
-    42: "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final",
-    43: "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab_seed43/final",
-    44: "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab_seed44/final",
+    42: str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"),
+    43: str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab_seed43/final"),
+    44: str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab_seed44/final"),
 }
 
 NEW_WORDS = {

@@ -5,6 +5,7 @@ Same 200 real UXSSD samples (100 correct + 100 disordered) as
 research/uxtd_transcriber/error_type_analysis.py, so the before/after
 comparison is apples-to-apples.
 """
+from pathlib import Path
 import csv
 import json
 import random
@@ -13,7 +14,7 @@ import urllib.request
 import uuid
 
 BACKEND = "http://127.0.0.1:8000/api/v1"
-PHONE_CLASSIFIER_DATA = "/mnt/c/Users/rosha/Documents/sw_2/research/phone_classifier/data"
+PHONE_CLASSIFIER_DATA = str(Path(__file__).resolve().parents[2] / "research/phone_classifier/data")
 N_PER_CLASS = 100
 
 random.seed(42)

@@ -1,4 +1,5 @@
 """Same WER methodology as evaluate.py, applied to the clean-data LoRA model."""
+from pathlib import Path
 import csv
 
 import jiwer
@@ -9,7 +10,7 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 from train import DATA_DIR, MODEL_NAME, WHISPER_SAMPLE_RATE, load_audio_resampled
 
 device = "cuda"
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora/final"
+LORA_DIR = str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora/final")
 
 
 def transcribe_all(model, processor, rows):

@@ -4,6 +4,7 @@ pass, saved to disk, so PASS_THRESHOLD can be swept offline afterward without
 re-running the model 5x. Uses the live /session/transcribe endpoint (real
 pipeline), not the raw model directly.
 """
+from pathlib import Path
 import csv
 import json
 import random
@@ -11,7 +12,7 @@ import uuid
 
 from test_integration_e2e import make_real_session, multipart_transcribe
 
-PHONE_CLASSIFIER_DATA = "/mnt/c/Users/rosha/Documents/sw_2/research/phone_classifier/data"
+PHONE_CLASSIFIER_DATA = str(Path(__file__).resolve().parents[2] / "research/phone_classifier/data")
 N_PER_CLASS = 100
 
 random.seed(42)
@@ -28,7 +29,7 @@ def main():
     print(f"capturing raw scores for {len(sample)} real UXSSD samples...")
 
     import sys
-    sys.path.insert(0, "/mnt/c/Users/rosha/Documents/sw_2/backend")
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
     from app.utils.compare_ipa import compare_ipa
     from app.utils.ipa import to_ipa
 

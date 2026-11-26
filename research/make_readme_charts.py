@@ -1,11 +1,12 @@
 """Generates the model-comparison and dev-progress charts for the README.
 Every number here traces to a real logged result in tasks/lessons.md — no
 invented figures. Re-run after any future retrain to keep the charts honest."""
+from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-OUT_DIR = "/mnt/c/Users/rosha/Documents/sw_2/docs/assets"
+OUT_DIR = str(Path(__file__).resolve().parents[1] / "docs/assets")
 
 plt.rcParams.update({
     "font.size": 12,

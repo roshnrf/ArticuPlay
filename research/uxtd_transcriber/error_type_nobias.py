@@ -6,6 +6,7 @@ If false-accept drops meaningfully without bias, that confirms the bias is
 suppressing real acoustic error signal — and quantifies the word-recognition
 cost of removing it (false-reject may also change, check both directions).
 """
+from pathlib import Path
 import csv
 import random
 import sys
@@ -15,12 +16,12 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 
 from train import MODEL_NAME, WHISPER_SAMPLE_RATE, load_audio_resampled
 
-sys.path.insert(0, "/mnt/c/Users/rosha/Documents/sw_2/backend")
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
 from app.utils.compare_ipa import compare_ipa
 from app.utils.ipa import to_ipa
 
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"
-PHONE_CLASSIFIER_DATA = "/mnt/c/Users/rosha/Documents/sw_2/research/phone_classifier/data"
+LORA_DIR = str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final")
+PHONE_CLASSIFIER_DATA = str(Path(__file__).resolve().parents[2] / "research/phone_classifier/data")
 PASS_THRESHOLD = 0.8
 N_PER_CLASS = 100
 device = "cuda"

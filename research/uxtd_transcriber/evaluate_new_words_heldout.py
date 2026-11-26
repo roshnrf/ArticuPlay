@@ -17,12 +17,12 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 
 from train import MODEL_NAME, WHISPER_SAMPLE_RATE, load_audio_resampled
 
-sys.path.insert(0, "/mnt/c/Users/rosha/Documents/sw_2/backend")
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
 from app.utils.compare_ipa import compare_ipa
 from app.utils.ipa import to_ipa
 
 BACKEND = "http://127.0.0.1:8000/api/v1"
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"
+LORA_DIR = str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final")
 AUDIO_DIR = Path("/tmp/heldout_new_words_v2")
 device = "cuda"
 

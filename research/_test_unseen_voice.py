@@ -4,6 +4,7 @@ everything so far used en-US-AnaNeural exclusively. If the fine-tuned model
 still wins here, that's evidence of real word/structure learning, not just
 memorizing one specific voice's acoustic signature.
 """
+from pathlib import Path
 import asyncio
 import json
 import subprocess
@@ -16,11 +17,11 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 import sys
 import urllib.request
 
-sys.path.insert(0, "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "research/uxtd_transcriber"))
 from train import load_audio_resampled, WHISPER_SAMPLE_RATE, MODEL_NAME
 
 device = "cuda"
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"
+LORA_DIR = str(Path(__file__).resolve().parents[1] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final")
 BACKEND = "http://127.0.0.1:8000/api/v1"
 UNSEEN_VOICE = "en-US-GuyNeural"
 

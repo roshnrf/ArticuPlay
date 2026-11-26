@@ -6,6 +6,7 @@ MediaRecorder settings (audio/webm;codecs=opus, 48kHz), POSTs multipart
 to the live endpoint exactly as the frontend's Recorder would, and checks
 the transcription is still sane.
 """
+from pathlib import Path
 import subprocess
 import urllib.request
 import uuid
@@ -13,8 +14,8 @@ import uuid
 BACKEND = "http://127.0.0.1:8000/api/v1"
 
 TEST_CASES = [
-    ("/mnt/c/Users/rosha/Documents/sw_2/research/phone_classifier/data/segments/01M-Maint2-017A_CONE_1.wav", "cone"),
-    ("/mnt/c/Users/rosha/Documents/sw_2/research/phone_classifier/data/segments/01M-BL1-002A_BREAD_8.wav", "bread"),
+    (str(Path(__file__).resolve().parents[2] / "research/phone_classifier/data/segments/01M-Maint2-017A_CONE_1.wav"), "cone"),
+    (str(Path(__file__).resolve().parents[2] / "research/phone_classifier/data/segments/01M-BL1-002A_BREAD_8.wav"), "bread"),
     ("/tmp/heldout_new_words_v2/w_0.wav", "toad"),
     ("/tmp/heldout_new_words_v2/w_18.wav", "a giant purple dinosaur"),
 ]

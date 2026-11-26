@@ -1,6 +1,7 @@
 """Checks the full-vocab model against UXTD's own held-out test set (330
 utterances, never seen in training) — makes sure adding 250 synthetic
 product words didn't regress real-child-speech performance."""
+from pathlib import Path
 import csv
 
 import jiwer
@@ -11,7 +12,7 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 from train import DATA_DIR, MODEL_NAME, WHISPER_SAMPLE_RATE, load_audio_resampled
 
 device = "cuda"
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"
+LORA_DIR = str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final")
 
 
 def transcribe_all(model, processor, rows):

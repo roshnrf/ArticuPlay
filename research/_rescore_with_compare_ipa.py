@@ -1,10 +1,11 @@
 """Re-scores the last full 250-word test results using the REAL product
 scoring method (compare_ipa, phoneme-level) instead of exact-substring match,
 to see the true accuracy picture the product would actually show."""
+from pathlib import Path
 import json
 import sys
 
-sys.path.insert(0, "/mnt/c/Users/rosha/Documents/sw_2/backend")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 from app.utils.ipa import to_ipa
 from app.utils.compare_ipa import compare_ipa
 

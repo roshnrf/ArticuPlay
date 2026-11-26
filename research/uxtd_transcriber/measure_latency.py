@@ -3,6 +3,7 @@ the actual inference config used in evaluation — compared against the
 product's 3s/item budget (spec doc). Loads the model once, times only
 the generate() call (not model load), across 20 real audio samples.
 """
+from pathlib import Path
 import time
 
 import torch
@@ -11,7 +12,7 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 
 from train import MODEL_NAME, WHISPER_SAMPLE_RATE, load_audio_resampled
 
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"
+LORA_DIR = str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final")
 AUDIO_DIR = "/tmp/heldout_new_words_v2"
 device = "cuda"
 

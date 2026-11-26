@@ -7,6 +7,7 @@ to fix most premature-truncation failures at zero retraining cost).
 
 Re-run this after any future retrain before trusting a held-out-only metric.
 """
+from pathlib import Path
 import json
 import time
 import urllib.request
@@ -18,7 +19,7 @@ from transformers import WhisperForConditionalGeneration, WhisperProcessor
 from train import MODEL_NAME, WHISPER_SAMPLE_RATE, load_audio_resampled
 
 BACKEND = "http://127.0.0.1:8000/api/v1"
-LORA_DIR = "/mnt/c/Users/rosha/Documents/sw_2/research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final"
+LORA_DIR = str(Path(__file__).resolve().parents[2] / "research/uxtd_transcriber/uxtd_whisper_small_lora_fullvocab/final")
 device = "cuda"
 
 

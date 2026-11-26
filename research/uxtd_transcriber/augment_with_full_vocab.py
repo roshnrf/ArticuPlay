@@ -17,11 +17,20 @@ AUGMENT_DIR = DATA_DIR / "augment_full_vocab"
 
 
 def fetch_all_words() -> list[dict]:
+    """Returns only the original 250 product words.
+
+    The DB later gained the v2/v3 expansion (241 words), which augment_v2v3.py covers on its
+    own. Without this filter a rebuild against a fully seeded DB would synthesize those words
+    twice and double their weight in train_fullvocab.csv, unlike the original training run.
+    """
+    from augment_v2v3 import V2_WORDS, V3_WORDS
+
+    expansion = {w for bank in (V2_WORDS, V3_WORDS) for ws in bank.values() for w in ws}
     words = []
     for level in range(1, 6):
         req = urllib.request.Request(f"{BACKEND}/content/words/{level}?lang=en")
         with urllib.request.urlopen(req) as resp:
-            words.extend(json.loads(resp.read()))
+            words.extend(w for w in json.loads(resp.read()) if w["word"] not in expansion)
     return words
 
 
